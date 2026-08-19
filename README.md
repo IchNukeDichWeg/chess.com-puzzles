@@ -1,0 +1,130 @@
+# chess.com tactics puzzles
+
+852,943 tactics puzzles from chess.com — position, solution, rating, pass rate
+and solve-time stats for each one, in a JSON and a CSV.
+
+## Why
+
+Chess.com gives free accounts 3 puzzles per day and puts the rest behind
+Premium. The puzzles come from games people played, and the ratings come from
+the people who solve them. I don't think that belongs behind a paywall, so I
+collected them through the same API the puzzle pages use.
+
+This release contains the rated tactics set only. The daily puzzles (which
+chess.com publishes for free anyway) are not included, so every entry here has
+a numeric id, a rating, and a solution in the same encoding.
+
+## Files
+
+Same content in two shapes:
+
+| file | size | keyed by |
+|---|---|---|
+| `puzzles.json` | ~950 MB | puzzle id |
+| `puzzles_by_fen.csv` | ~700 MB | position (`fen3`) |
+
+Each is zipped in the release: `puzzles-json.zip` (~215 MB) and
+`puzzles-csv.zip` (~194 MB).
+
+CSV columns:
+
+```
+fen3,id,rating,initialFen,tcnMoveList,colorOfUser,pgn,passRate,averageSeconds,gameLiveId,gameId
+```
+
+A JSON entry looks like this:
+
+```json
+"1322993": {
+  "id": 1322993,
+  "fen3": "2r3k1/p4ppp/3p4/8/1P1qpP2/P6P/3B2P1/3Q1RK1 w -",
+  "initialFen": "2r3k1/p4ppp/3p4/8/1P1qpP2/P6P/3B2P1/3Q1RK1 w - - 1 23",
+  "tcnMoveList": "fnCunm6cdculgpBDowDnmnl{",
+  "colorOfUser": "black",
+  "rating": 3554,
+  "passRate": 27.3,
+  "averageSeconds": 85,
+  "attemptCount": 1411,
+  "gameLiveId": 12572304173,
+  "gameId": null,
+  "pgn": "[Event \"?\"]\n..."
+}
+```
+
+Three things to know before parsing:
+
+- `fen3` is the first three fields of a FEN — board, side to move, castling
+  rights. No en passant square, no move counters. To look a position up, cut
+  your FEN down to its first three fields.
+- `tcnMoveList` is chess.com's TCN move encoding, not SAN or UCI. Two
+  characters per move; decoder below. The full PGN is in the `pgn` column if
+  you'd rather parse that instead.
+- The `pgn` field contains real newlines. Any proper CSV parser handles the
+  quoting; `split("\n")` does not.
+
+## Decoding TCN
+
+Each move is two characters: a from-square and a to-square, plus a promotion
+piece when the to-character runs past the board. This turns a `tcnMoveList`
+into a list of moves like `f1f2`, `e4e3`, ..., `d2c1q`:
+
+```python
+TCN = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?{~}(^)[_]@#$"
+
+def decode_tcn(tcn):
+    moves = []
+    for i in range(0, len(tcn), 2):
+        a = TCN.index(tcn[i])
+        b = TCN.index(tcn[i + 1])
+        promo = ""
+        if b > 63:                       # promotion: b encodes the piece + which file
+            promo = "qnrbk"[(b - 64) // 3]
+            b = a + (-8 if a < 16 else 8) + ((b - 64) % 3) - 1
+        frm = TCN[a % 8] + str(a // 8 + 1)   # e.g. "f1"
+        to = TCN[b % 8] + str(b // 8 + 1)
+        moves.append(frm + to + promo)       # UCI-style, e.g. "d2c1q"
+    return moves
+
+# decode_tcn("fnCunm6cdculgpBDowDnmnl{")
+# -> ['f1f2', 'e4e3', 'f2e2', 'c8c1', 'd1c1', 'e3d2',
+#     'g1h2', 'd4f4', 'g2g3', 'f4f2', 'e2f2', 'd2c1q']
+```
+
+The moves alternate sides starting from `colorOfUser`'s opponent — the first
+move is the setup move played *into* the puzzle position, then the solver's
+reply, and so on. Feed them to any board library (python-chess, chess.js) from
+`initialFen` to replay the line.
+
+## Ratings
+
+```
+  100-299   #####                                           24,561
+  300-499   #####                                           24,399
+  500-699   #######                                         31,491
+  700-899   ##############                                  66,960
+  900-1099  ###################################            163,475
+ 1100-1299  ############################################## 216,115
+ 1300-1499  #######################                        105,872
+ 1500-1699  ##############                                  66,574
+ 1700-1899  ##########                                      48,270
+ 1900-2099  ##########                                      45,641
+ 2100-2299  ######                                          26,715
+ 2300-2499  ###                                             13,672
+ 2500-2699  ##                                               8,850
+ 2700-2899  #                                                6,935
+ 2900-3099  #                                                2,420
+ 3100-3299  #                                                  730
+ 3300-3499  #                                                  204
+ 3500-3699  #                                                   48
+ 3700-4699  #                                                   11
+```
+
+852,943 puzzles, median 1211. Half of them are rated below 1200 and 97% below
+2400 — that's where most players are, so that's where the puzzles pile up.
+Ratings shift as more people attempt a puzzle, so these are a snapshot from
+August 2026.
+
+Ratings run from 100 to 4666, but the highest handful are freshly generated
+puzzles with few or no attempts yet, so those numbers are provisional. The
+hardest puzzle that plenty of people have actually tried is rated 3855. If you
+want only settled ratings, filter on `attemptCount`.
