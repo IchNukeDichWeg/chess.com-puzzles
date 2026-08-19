@@ -1,7 +1,8 @@
 # chess.com tactics puzzles
 
-852,943 tactics puzzles from chess.com — position, solution, rating, pass rate
+852,943 tactics puzzles from chess.com - position, solution, rating, pass rate
 and solve-time stats for each one, in a JSON and a CSV.
+You can find all of the Puzzles in the release Page to Download as a .zip file. 
 
 ## Why
 
@@ -120,7 +121,7 @@ reply, and so on. Feed them to any board library (python-chess, chess.js) from
 ```
 
 852,943 puzzles, median 1211. Half of them are rated below 1200 and 97% below
-2400 — that's where most players are, so that's where the puzzles pile up.
+2400 - that's where most players are, so that's where the puzzles pile up.
 Ratings shift as more people attempt a puzzle, so these are a snapshot from
 August 2026.
 
