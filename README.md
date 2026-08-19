@@ -1,7 +1,7 @@
 # chess.com tactics puzzles
 
-852,943 tactics puzzles from chess.com - position, solution, rating, pass rate
-and solve-time stats for each one, in a JSON and a CSV.
+852,943 tactics puzzles from chess.com containing position, solution, rating, pass rate
+and solve-time stats for each one, in a JSON and a CSV format  .
 You can find all of the Puzzles in the release Page to Download as a .zip file. 
 
 ## Why
@@ -12,7 +12,7 @@ the people who solve them. I don't think that belongs behind a paywall, so I
 collected them through the same API the puzzle pages use.
 
 This release contains the rated tactics set only. The daily puzzles (which
-chess.com publishes for free anyway) are not included, so every entry here has
+chess.com publishes for free anyway can be found [here](https://github.com/samuraitruong/chess.com-daily-puzzle)) are not included, so every entry here has
 a numeric id, a rating, and a solution in the same encoding.
 
 ## Files
@@ -54,9 +54,9 @@ A JSON entry looks like this:
 
 Three things to know before parsing:
 
-- `fen3` is the first three fields of a FEN — board, side to move, castling
+- `fen3` is the first three fields of a FEN the board, side to move, castling
   rights. No en passant square, no move counters. To look a position up, cut
-  your FEN down to its first three fields.
+  your FEN down to its first three fields (`fen3 = " ".join(fen.split()[:3])`).
 - `tcnMoveList` is chess.com's TCN move encoding, not SAN or UCI. Two
   characters per move; decoder below. The full PGN is in the `pgn` column if
   you'd rather parse that instead.
