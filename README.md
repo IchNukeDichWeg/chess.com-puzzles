@@ -1,6 +1,6 @@
 # chess.com tactics puzzles
 
-852,943 tactics puzzles from chess.com containing position, solution, rating,
+952,898 tactics puzzles from chess.com containing position, solution, rating,
 pass rate and solve-time stats for each one, in a JSON and a CSV format. You can
 find all of the puzzles on the release page to download as a .zip file.
 
@@ -22,11 +22,11 @@ Same content in two shapes:
 
 | file | size | keyed by |
 |---|---|---|
-| `puzzles.json` | ~950 MB | puzzle id |
-| `puzzles_by_fen.csv` | ~700 MB | position (`fen3`) |
+| `puzzles.json` | ~1.05 GB | puzzle id |
+| `puzzles_by_fen.csv` | ~770 MB | position (`fen3`) |
 
-Each is zipped in the release: `puzzles-json.zip` (~215 MB) and
-`puzzles-csv.zip` (~194 MB).
+Each is zipped in the release: `puzzles-json.zip` (~244 MB) and
+`puzzles-csv.zip` (~220 MB).
 
 CSV columns:
 
@@ -101,33 +101,33 @@ reply, and so on. Feed them to any board library (python-chess, chess.js) from
 ## Ratings
 
 ```
-  100-299   #####                                           24,561
-  300-499   #####                                           24,399
-  500-699   #######                                         31,491
-  700-899   ##############                                  66,960
-  900-1099  ###################################            163,475
- 1100-1299  ############################################## 216,115
- 1300-1499  #######################                        105,872
- 1500-1699  ##############                                  66,574
- 1700-1899  ##########                                      48,270
- 1900-2099  ##########                                      45,641
- 2100-2299  ######                                          26,715
- 2300-2499  ###                                             13,672
- 2500-2699  ##                                               8,850
- 2700-2899  #                                                6,935
- 2900-3099  #                                                2,420
- 3100-3299  #                                                  730
- 3300-3499  #                                                  204
- 3500-3699  #                                                   48
- 3700-4699  #                                                   11
+  100-299   #####                                           28,472
+  300-499   #####                                           26,713
+  500-699   #######                                         34,909
+  700-899   ##############                                  74,795
+  900-1099  ##################################            183,393
+ 1100-1299  ############################################## 246,645
+ 1300-1499  #######################                        121,833
+ 1500-1699  ##############                                  74,279
+ 1700-1899  ##########                                      52,386
+ 1900-2099  #########                                       48,157
+ 2100-2299  #####                                           27,856
+ 2300-2499  ###                                             13,968
+ 2500-2699  ##                                               8,517
+ 2700-2899  #                                                7,045
+ 2900-3099  #                                                2,674
+ 3100-3299  #                                                  849
+ 3300-3499  #                                                  300
+ 3500-3699  #                                                   87
+ 3700-4699  #                                                   20
 ```
 
-852,943 puzzles, median 1211. Half of them are rated below 1200 and 97% below
+952,898 puzzles, median 1206. Half of them are rated below 1200 and 97% below
 2400, which is where most players are, so that's where the puzzles pile up.
 Ratings shift as more people attempt a puzzle, so these are a snapshot from
-August 2026.
+September 2026.
 
-Ratings run from 100 to 4666, but the highest handful are freshly generated
+Ratings run from 100 to 4410, but the highest handful are freshly generated
 puzzles with few or no attempts yet, so those numbers are provisional. The
-hardest puzzle that plenty of people have actually tried is rated 3855. If you
+hardest puzzle that plenty of people have actually tried is rated 3935. If you
 want only settled ratings, filter on `attemptCount`.
